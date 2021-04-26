@@ -1,0 +1,18 @@
+hr:
+  salary:
+    def:
+      percent: 5
+    smart:
+      raisingIntervals:
+        '0': 0
+        '120': 10
+        '30': 2
+        '60': 5
+spring:
+  mvc:
+    format:
+      date: yyyy-MM-dd
+  profiles:
+    active: smart
+  thymeleaf:
+    cache: false

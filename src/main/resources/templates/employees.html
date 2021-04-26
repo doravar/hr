@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>HR application</title>
+
+</head>
+
+<style>
+table, tr, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+th, td, input {
+	padding: 8px;
+	text-align: left;
+}
+
+tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+</style>
+
+<body>
+	<h1>List of employees</h1>
+
+	<table>
+		<tr>
+			<th>Id</th>
+			<th>Name</th>
+			<th>Job title</th>
+			<th>Salary</th>
+			<th>Entry date</th>
+			<th></th>
+		</tr>
+
+		<tr th:each="employee: ${employees}">		<!-- tageken belül th:.... illeszti be az adatokat java-ból, ${}-ben érjük el a controller-ből, th:each kvázi foreach ciklus -->
+			<td th:text="${employee.id}">Id</td>
+			<!-- itt csak a kódolvashatóság miatt szerepelnek benne az oszlopneek -->
+			<td><a th:href="@{/employees/{id}(id=${employee.id})}"
+				th:text="${employee.name}">Name</a></td>
+			<td th:text="${employee.jobTitle}">Job title</td>
+			<td th:text="${employee.salary}">Salary</td>
+			<td th:text="${employee.dateOfStartWork}">Entry date</td>
+			<td><a th:href="@{/deleteEmployee/{id}(id=${employee.id})}">Delete</a></td>
+
+			<!-- 'a' tagben van a link, href után dinamikusan hozzuk létre az oldalt, ahova vezet; @{} azért van, hogy ha más elérési útra kerül az alkalmazás akkor is érvényes legyen a link -->
+
+		</tr>
+	</table>
+
+	<h1>Add new employee</h1>
+	<form th:action="@{/employees}" method="post"
+		th:object="${newEmployee}">
+		Id: <input th:field="*{id}" /> <br /> Name: <input
+			th:field="*{name}" /> <br /> Job title: <input
+			th:field="*{jobTitle}" /> <br /> Salary: <input
+			th:field="*{salary}" /> <br /> Start of work (yyyy-mm-dd): <input
+			th:field="*{dateOfStartWork}" /> <br /> <input type="submit"
+			value=Add />
+	</form>
+
+</body>
+</html>
