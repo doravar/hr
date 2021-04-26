@@ -45,23 +45,21 @@ public class EmployeeController {
 	EmployeeRepository employeeRepository;
 
 	Pageable pageWithTwoElements = PageRequest.of(0, 2);
-	
 
 	@GetMapping
-	public List<EmployeeDto> getEmployees(@RequestParam(required = false) Integer minSalary){
-		if(minSalary == null) {
+	public List<EmployeeDto> getEmployees(@RequestParam(required = false) Integer minSalary) {
+		if (minSalary == null) {
 			return employeeMapper.employeesToDtos(employeeService.findAll());
 		} else {
 			return employeeMapper.employeesToDtos(employeeRepository.findBySalaryGreaterThan(minSalary));
 		}
 	}
-	
-//	@GetMapping
-//	public Page<EmployeeDto> getEmployees(){
-//			return employeeRepository.findAll(pageWithTwoElements);
-//	}
-	
-	
+
+	@GetMapping("/pageable")
+	public Page<EmployeeDto> getEmployees() {
+		return employeeRepository.findAll(pageWithTwoElements).map(e -> employeeMapper.employeeToDto(e));
+	}
+
 	@GetMapping("/{id}")
 	public ResponseEntity<EmployeeDto> getById(@PathVariable long id) {
 		EmployeeDto employeeDto = employeeMapper.employeeToDto(
@@ -88,7 +86,7 @@ public class EmployeeController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		Employee updatedEmployee = employeeService.update(employeeMapper.dtoToEmployee(employeeDto));
-		if(updatedEmployee == null) {
+		if (updatedEmployee == null) {
 			return ResponseEntity.notFound().build();
 		} else {
 			return ResponseEntity.ok(employeeMapper.employeeToDto(updatedEmployee));
@@ -114,38 +112,33 @@ public class EmployeeController {
 		return employeeMapper.employeesToDtos(employeeService.findByJobTitle(jobTitle));
 	}
 
-	@PostMapping("/listByNameFragment")   
+	@PostMapping("/listByNameFragment")
 	public List<EmployeeDto> getByNameFragment(@RequestParam String nameFragment) {
 		return employeeMapper.employeesToDtos(employeeService.findByNameStartingWith(nameFragment));
 	}
 
-	@PostMapping("/listByEntryDate")   
-	public List<EmployeeDto> getByEntryDate(@RequestBody LocalDate start, @RequestBody LocalDate end) {
+	@GetMapping("/listByEntryDate")
+	public List<EmployeeDto> getByEntryDate(@RequestParam LocalDate start, @RequestParam LocalDate end) {
 		return employeeMapper.employeesToDtos(employeeService.findByEntryDateBetween(start, end));
 	}
-	
+
 //	@PostMapping("/listByAvgSalary")
 //	public List<Object[]> getByAvgSalary(@RequestParam long companyId) {
 //			return employeeService.countAvgSalaryByJobtitle(companyId);
 //		
 //	}
-	
+
 	@PostMapping("/listByAvgSalary")
 	public String getByAvgSalary(@RequestParam long companyId) {
 		List<Object[]> result = employeeService.countAvgSalaryByJobtitle(companyId);
 		StringBuilder sb = new StringBuilder();
 		for (Object[] objects : result) {
 			sb.append(objects[1].toString());
-			sb.append(": ");			
+			sb.append(": ");
 			sb.append(objects[0].toString());
 			sb.append("\n");
 		}
 		return sb.toString();
 	}
-	
-	
-	
-	
-	
-	
+
 }

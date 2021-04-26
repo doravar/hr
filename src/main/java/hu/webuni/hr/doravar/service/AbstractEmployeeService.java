@@ -17,8 +17,6 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 	@Autowired
 	EmployeeRepository employeeRepository;
 
-
-	
 	public Employee save(Employee employee) {
 		return employeeRepository.save(employee);
 	}
@@ -33,7 +31,7 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 	public Page<Employee> findAll(Pageable pageable) {
 		return employeeRepository.findAll(pageable);
 	}
-	
+
 	public List<Employee> findAll() {
 		return employeeRepository.findAll();
 	}
@@ -60,8 +58,8 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 	public List<Employee> findByEntryDateBetween(LocalDate start, LocalDate end) {
 		return employeeRepository.findByEntryDateBetween(start, end);
 	}
-	
-	public List<Object[]> countAvgSalaryByJobtitle(Long companyId){
+
+	public List<Object[]> countAvgSalaryByJobtitle(Long companyId) {
 		return employeeRepository.countAvgSalaryByJobtitle(companyId);
 	}
 

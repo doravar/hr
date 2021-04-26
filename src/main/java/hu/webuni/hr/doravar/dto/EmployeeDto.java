@@ -6,27 +6,31 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 
+import hu.webuni.hr.doravar.model.Position;
+
 public class EmployeeDto {
 
 	private Long id;
 	@NotEmpty(message = "name has to be present")
 	private String name;
-	@NotEmpty(message = "job title has to be present")
-	private String jobTitle;
+//	@NotEmpty(message = "job title has to be present")
+//	private String jobTitle;
 	@Min(value = 0, message = "salary has to be positive") // @Positive is lehet
 	private int salary;
 	@Past(message = "entryDate has to be past")
 	private LocalDate entryDate;
 
 	private String companyName;
+	@NotEmpty(message = "position has to be present")
+	private Position position;
 
 	public EmployeeDto() {
 	}
 
-	public EmployeeDto(Long employeeId, String name, String jobTitle, int salary, LocalDate entryDate) {
+	public EmployeeDto(Long employeeId, String name, Position position, int salary, LocalDate entryDate) {
 		this.id = employeeId;
 		this.name = name;
-		this.jobTitle = jobTitle;
+		this.position = position;
 		this.salary = salary;
 		this.entryDate = entryDate;
 	}
@@ -52,12 +56,12 @@ public class EmployeeDto {
 		this.name = name;
 	}
 
-	public String getJobTitle() {
-		return jobTitle;
+	public Position getPosition() {
+		return position;
 	}
 
-	public void setJobTitle(String jobTitle) {
-		this.jobTitle = jobTitle;
+	public void setPosition(Position position) {
+		this.position = position;
 	}
 
 	public int getSalary() {
@@ -84,10 +88,5 @@ public class EmployeeDto {
 		this.companyName = companyName;
 	}
 
-	@Override
-	public String toString() {
-		return "EmployeeDto [id=" + id + ", name=" + name + ", jobTitle=" + jobTitle + ", salary=" + salary
-				+ ", entryDate=" + entryDate + "]";
-	}
 
 }

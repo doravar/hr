@@ -1,7 +1,7 @@
 package hu.webuni.hr.doravar.dto;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Positive;
 
 import hu.webuni.hr.doravar.model.Education;
 
@@ -10,13 +10,20 @@ public class PositionDto {
 	private Long id;
 	@NotEmpty
 	private String name;
-	@NotEmpty
 	private Education requiredEducation;
-	@Positive
 	private int minSalary;
+
+	public PositionDto() {
+	}
 
 	public PositionDto(Long id, String name, Education requiredEducation, int minSalary) {
 		this.id = id;
+		this.name = name;
+		this.requiredEducation = requiredEducation;
+		this.minSalary = minSalary;
+	}
+
+	public PositionDto(String name, Education requiredEducation, int minSalary) {
 		this.name = name;
 		this.requiredEducation = requiredEducation;
 		this.minSalary = minSalary;

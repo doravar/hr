@@ -19,11 +19,11 @@ public class EmployeeTLController { // for Thymeleaf
 
 	private List<Employee> allEmployees = new ArrayList<>();
 
-	{
-		allEmployees.add(new Employee(1L, "Nyúl Péter", "programmer", 500000, LocalDate.of(2020, 01, 01)));
-		allEmployees.add(new Employee(2L, "Macska Jancsi", "manager", 700000, LocalDate.of(2020, 01, 01)));
-		allEmployees.add(new Employee(3L, "Füttyös Vilkó", "programmanager", 600000, LocalDate.of(2020, 01, 01)));
-	}
+//	{
+//		allEmployees.add(new Employee(1L, "Nyúl Péter", "programmer", 500000, LocalDate.of(2020, 01, 01)));
+//		allEmployees.add(new Employee(2L, "Macska Jancsi", "manager", 700000, LocalDate.of(2020, 01, 01)));
+//		allEmployees.add(new Employee(3L, "Füttyös Vilkó", "programmanager", 600000, LocalDate.of(2020, 01, 01)));
+//	}
 
 	@GetMapping("/")
 	public String home() {

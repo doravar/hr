@@ -15,13 +15,9 @@ public interface EmployeeMapper {
 	List<EmployeeDto> employeesToDtos(List<Employee> employees);
 
 	List<Employee> dtosToEmployees(List<EmployeeDto> employees);
-	
-//	Page<EmployeeDto> employeesToDtos(Page<Employee> employees);
-//
-//	Page<Employee> dtosToEmployees(Page<EmployeeDto> employees);
-	
 
 	@Mapping(target = "companyName", source = "company.name")	// csak a company neve menjen át
+//	@Mapping(target = "positionName", source = "position.name")
 	EmployeeDto employeeToDto(Employee employee);
 
 	Employee dtoToEmployee(EmployeeDto employeeDto);
