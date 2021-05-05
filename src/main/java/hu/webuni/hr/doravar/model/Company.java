@@ -3,12 +3,15 @@ package hu.webuni.hr.doravar.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 
+@NamedEntityGraph(name = "Company.full", attributeNodes = @NamedAttributeNode("employees"))
 @Entity
 public class Company {
 
@@ -18,8 +21,9 @@ public class Company {
 	private long registrationNumber;
 	private String name;
 	private String address;
-//	private CompanyType companyType;
-	private String companyType;
+
+	@ManyToOne
+	private CompanyType companyType;
 
 	@OneToMany(mappedBy = "company")
 //	@OneToMany(mappedBy = "company", cascade = {CascadeType.MERGE, CascadeType.PERSIST}) // ld service-ben addEmployee metódus
@@ -82,19 +86,11 @@ public class Company {
 		this.employees = employees;
 	}
 
-//	public CompanyType getCompanyType() {
-//		return companyType;
-//	}
-//
-//	public void setCompanyType(CompanyType companyType) {
-//		this.companyType = companyType;
-//	}
-
-	public String getCompanyType() {
+	public CompanyType getCompanyType() {
 		return companyType;
 	}
 
-	public void setCompanyType(String companyType) {
+	public void setCompanyType(CompanyType companyType) {
 		this.companyType = companyType;
 	}
 

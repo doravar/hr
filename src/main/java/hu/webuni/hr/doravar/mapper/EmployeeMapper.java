@@ -16,8 +16,8 @@ public interface EmployeeMapper {
 
 	List<Employee> dtosToEmployees(List<EmployeeDto> employees);
 
-	@Mapping(target = "companyName", source = "company.name")	// csak a company neve menjen át
-//	@Mapping(target = "positionName", source = "position.name")
+	@Mapping(target = "companyName", source = "company.name")	// csak a company neve menjen át; getter-setter kell a dto-ba is
+	@Mapping(target = "positionName", source = "position.name")
 	EmployeeDto employeeToDto(Employee employee);
 
 	Employee dtoToEmployee(EmployeeDto employeeDto);

@@ -33,7 +33,7 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 	}
 
 	public List<Employee> findAll() {
-		return employeeRepository.findAll();
+		return employeeRepository.findAllByOrderByIdAsc();
 	}
 
 	public Optional<Employee> findById(Long id) {
@@ -47,8 +47,8 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 			throw new NoSuchElementException();
 	}
 
-	public List<Employee> findByJobTitle(String jobTitle) {
-		return employeeRepository.findByJobTitle(jobTitle);
+	public List<Employee> findByJobTitle(String positionName) {
+		return employeeRepository.findByPositionName(positionName);
 	}
 
 	public List<Employee> findByNameStartingWith(String fragment) {

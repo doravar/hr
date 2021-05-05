@@ -25,8 +25,8 @@ public interface EmployeeService {
 
 	void deleteById(Long id);
 
-	List<Employee> findByJobTitle(String jobTitle);
-
+	List<Employee> findByJobTitle(String positionName);
+	
 	List<Employee> findByNameStartingWith(String fragment);
 
 	List<Employee> findByEntryDateBetween(LocalDate start, LocalDate end);

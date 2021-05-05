@@ -17,8 +17,7 @@ public class CompanyDto {
 	private String name;
 	@JsonView(Views.BaseData.class)
 	private String address;
-//	private CompanyType companyType;
-	private String companyType;
+	private CompanyType companyType;
 	private List<EmployeeDto> employees = new ArrayList<>();
 	
 	
@@ -73,21 +72,13 @@ public class CompanyDto {
 		this.employees = employees;
 	}
 
-	public String getCompanyType() {
+	public CompanyType getCompanyType() {
 		return companyType;
 	}
 
-	public void setCompanyType(String companyType) {
+	public void setCompanyType(CompanyType companyType) {
 		this.companyType = companyType;
 	}
-
-//	public CompanyType getCompanyType() {
-//		return companyType;
-//	}
-//
-//	public void setCompanyType(CompanyType companyType) {
-//		this.companyType = companyType;
-//	}
 
 	
 }

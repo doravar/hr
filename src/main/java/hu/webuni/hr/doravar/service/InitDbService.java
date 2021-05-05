@@ -9,8 +9,10 @@ import hu.webuni.hr.doravar.model.Company;
 import hu.webuni.hr.doravar.model.Education;
 import hu.webuni.hr.doravar.model.Employee;
 import hu.webuni.hr.doravar.model.Position;
+import hu.webuni.hr.doravar.model.PositionDetailsByCompany;
 import hu.webuni.hr.doravar.repository.CompanyRepository;
 import hu.webuni.hr.doravar.repository.EmployeeRepository;
+import hu.webuni.hr.doravar.repository.PositionDetailsByCompanyRepository;
 import hu.webuni.hr.doravar.repository.PositionRepository;
 
 @Service
@@ -24,6 +26,9 @@ public class InitDbService {
 	
 	@Autowired
 	PositionRepository positionRepository;
+	
+	@Autowired
+	PositionDetailsByCompanyRepository positionDetailsByCompanyRepository;
 
 	public void clearDB() {
 		companyRepository.deleteAll();
@@ -33,16 +38,16 @@ public class InitDbService {
 
 	public void insertTestData() {
 
-		Position position1 = new Position("programmer", Education.BA, 500_000);
-		Position position2 = new Position("manager", Education.MA, 800_000);
-		Position position3 = new Position("tester", Education.HIGHSCHOOL, 300_000);
+		Position position1 = new Position("programmer", Education.COLLEGE);
+		Position position2 = new Position("manager", Education.UNIVERSITY);
+		Position position3 = new Position("tester", Education.HIGHSCHOOL);
 		
 		Employee employee1 = new Employee("Employee Name1", position1, 100_000, LocalDate.of(2010, 01, 01));
 		Employee employee2 = new Employee("Employee Name2", position1, 200_000, LocalDate.of(2013, 02, 01));
 		Employee employee3 = new Employee("Employee Name3", position1, 300_000, LocalDate.of(2015, 01, 01));
-		Employee employee4 = new Employee("Employee Name4", position2, 400_000, LocalDate.of(2018, 01, 01));
-		Employee employee5 = new Employee("Employee Name5", position2, 500_000, LocalDate.of(2020, 01, 01));
-		Employee employee6 = new Employee("Employee Name6", position3, 500, LocalDate.of(2021, 01, 01));
+		Employee employee4 = new Employee("Employee Name4", position2, 100_000, LocalDate.of(2018, 01, 01));
+		Employee employee5 = new Employee("Employee Name5", position2, 200_000, LocalDate.of(2020, 01, 01));
+		Employee employee6 = new Employee("Employee Name6", position3, 100, LocalDate.of(2021, 01, 01));
 
 		Company company1 = new Company(111, "Company1", "adress 1");
 		Company company2 = new Company(222, "Company2", "adress 2");
@@ -76,6 +81,19 @@ public class InitDbService {
 		employeeRepository.save(employee4);
 		employeeRepository.save(employee5);
 		employeeRepository.save(employee6);
+		
+		
+		PositionDetailsByCompany pd = new PositionDetailsByCompany();
+		pd.setCompany(company1);
+		pd.setMinSalary(211111);
+		pd.setPosition(position1);
+		positionDetailsByCompanyRepository.save(pd);
+		
+		PositionDetailsByCompany pd2 = new PositionDetailsByCompany();
+		pd2.setCompany(company2);
+		pd2.setMinSalary(199999);
+		pd2.setPosition(position1);
+		positionDetailsByCompanyRepository.save(pd2);
 	}
 
 }

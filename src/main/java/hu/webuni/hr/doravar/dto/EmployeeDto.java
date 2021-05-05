@@ -13,8 +13,6 @@ public class EmployeeDto {
 	private Long id;
 	@NotEmpty(message = "name has to be present")
 	private String name;
-//	@NotEmpty(message = "job title has to be present")
-//	private String jobTitle;
 	@Min(value = 0, message = "salary has to be positive") // @Positive is lehet
 	private int salary;
 	@Past(message = "entryDate has to be past")
@@ -22,15 +20,15 @@ public class EmployeeDto {
 
 	private String companyName;
 	@NotEmpty(message = "position has to be present")
-	private Position position;
+	private String positionName;
 
 	public EmployeeDto() {
 	}
 
-	public EmployeeDto(Long employeeId, String name, Position position, int salary, LocalDate entryDate) {
-		this.id = employeeId;
+	public EmployeeDto(Long id, String name, String positionName, int salary, LocalDate entryDate) {
+		this.id = id;
 		this.name = name;
-		this.position = position;
+		this.positionName = positionName;
 		this.salary = salary;
 		this.entryDate = entryDate;
 	}
@@ -54,14 +52,6 @@ public class EmployeeDto {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Position getPosition() {
-		return position;
-	}
-
-	public void setPosition(Position position) {
-		this.position = position;
 	}
 
 	public int getSalary() {
@@ -88,5 +78,11 @@ public class EmployeeDto {
 		this.companyName = companyName;
 	}
 
+	public String getPositionName() {
+		return positionName;
+	}
 
+	public void setPositionName(String positionName) {
+		this.positionName = positionName;
+	}
 }

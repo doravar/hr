@@ -16,14 +16,13 @@ public class Employee {
 	private Long id;
 
 	private String name;
-//	private String jobTitle;
 	private int salary;
 	private LocalDate entryDate;
 
 	@ManyToOne
 	private Company company;
 	
-	@OneToOne
+	@ManyToOne
 	private Position position;
 
 	public Employee() {

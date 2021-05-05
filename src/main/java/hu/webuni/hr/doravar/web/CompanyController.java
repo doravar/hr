@@ -21,7 +21,10 @@ import hu.webuni.hr.doravar.dto.CompanyDto;
 import hu.webuni.hr.doravar.dto.EmployeeDto;
 import hu.webuni.hr.doravar.mapper.CompanyMapper;
 import hu.webuni.hr.doravar.mapper.EmployeeMapper;
+import hu.webuni.hr.doravar.model.AverageSalaryByPosition;
 import hu.webuni.hr.doravar.model.Company;
+import hu.webuni.hr.doravar.model.CompanyType;
+import hu.webuni.hr.doravar.repository.CompanyRepository;
 import hu.webuni.hr.doravar.service.CompanyService;
 
 @RestController
@@ -37,47 +40,54 @@ public class CompanyController {
 
 	@Autowired
 	EmployeeMapper employeeMapper;
+	
+	@Autowired
+	CompanyRepository companyRepository;
 
 	@GetMapping
 	public List<CompanyDto> getCompanys(@RequestParam(required = false) Boolean full) {
-		List<Company> companies = companyService.findAll();
-		return full == null || full == false ? companyMapper.companySummariesToDtos(companies) // employees nélküli
-																								// company lista
-				: companyMapper.companiesToDtos(companies);
+		return full == null || full == false ? companyMapper.companySummariesToDtos(companyService.findAll())
+				// employees nélküli company lista,mappereléssel érjük el hogy ne tegye bele
+				: companyMapper.companiesToDtos(companyService.findAllWithEmployees());
 
 	}
 
 	@GetMapping("/{id}")
 	public CompanyDto getById(@PathVariable long id, @RequestParam(required = false) Boolean full) {
-		Company company = companyService.findById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-		return full == null || full == false ? companyMapper.companySummaryToDto(company)
-				: companyMapper.companyToDto(company);
+		try {
+			return full == null || full == false ? companyMapper.companySummaryToDto(companyService.findById(id).get())
+					: companyMapper.companyToDto(companyService.findByIdWithEmployees(id).get());
+
+		} catch (NoSuchElementException | NullPointerException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
 	}
+
+	@GetMapping(params = "minSalary")
+	public List<CompanyDto> getByEmployeesWithMinSalary(@RequestParam int minSalary) {
+		return companyMapper.companiesToDtos(companyService.listCompaniesWhereEmployeesGetMinSalary(minSalary));
+	}
+
+	@GetMapping(params = "minEmployees")
+	public List<CompanyDto> getByNumberOfEmployeesExceeds(@RequestParam int minEmployees) {
+		return companyMapper.companiesToDtos(companyService.listCompaniesWhereNumberOfEmployeesExceeds(minEmployees));
+	}
+	
+	@GetMapping("/{id}/salaryStats")
+	public List<AverageSalaryByPosition> getSalaryStatsById(@PathVariable long id) {
+		return companyRepository.findAverageSalariesByPosition(id);
+	}
+	
+	
 
 	@PostMapping
 	public CompanyDto createCompany(@RequestBody CompanyDto companyDto) {
-		Company company = companyService.save(companyMapper.dtoToCompany(companyDto));
+		Company company = companyService.save(companyMapper.dtoToCompany(companyDto));	// save update-eli is, tehát ha volt ilyen id, felülírja!
 		return companyMapper.companyToDto(company); /*
 													 * a return az új objektumot küldi vissza miután a felvétele
 													 * megtörtént; két konverzió, hogy a közben belekerült adatok is
 													 * szerepeljenek a visszaadott dto-ban
 													 */
-	}
-
-	@PutMapping("/{id}")
-	public ResponseEntity<CompanyDto> modifyCompany(@PathVariable long id, @RequestBody CompanyDto companyDto) {
-		companyDto.setId(id); /* itt cseréljük a dto-ban érkező id-t a hívásban lévőre (ha eltérő lenne) */
-		Company updatedCompany = companyService.update(companyMapper.dtoToCompany(companyDto));
-		if (updatedCompany == null) { // nem létező id-nál service null-t ad vissza
-			return ResponseEntity.notFound().build(); /* ha nincs id, 404-es hiba */
-		}
-		return ResponseEntity.ok(companyMapper.companyToDto(updatedCompany));
-	}
-
-	@DeleteMapping("/{id}")
-	public void deleteCompany(@PathVariable long id) {
-		companyService.deleteById(id);
 	}
 
 	@PostMapping("/{id}/employees")
@@ -90,13 +100,14 @@ public class CompanyController {
 		}
 	}
 
-	@DeleteMapping("/{id}/employees/{employeeId}")
-	public CompanyDto deleteEmployee(@PathVariable long id, @PathVariable long employeeId) {		// csak a cégből vesszük ki, nem töröljük az employeet
-		try {
-			return companyMapper.companyToDto(companyService.deleteEmployee(id, employeeId));
-		} catch (NoSuchElementException e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+	@PutMapping("/{id}")
+	public ResponseEntity<CompanyDto> modifyCompany(@PathVariable long id, @RequestBody CompanyDto companyDto) {
+		companyDto.setId(id); /* itt cseréljük a dto-ban érkező id-t a hívásban lévőre (ha eltérő lenne) */
+		Company updatedCompany = companyService.update(companyMapper.dtoToCompany(companyDto));
+		if (updatedCompany == null) { // nem létező id-nál service null-t ad vissza
+			return ResponseEntity.notFound().build(); /* ha nincs id, 404-es hiba */
 		}
+		return ResponseEntity.ok(companyMapper.companyToDto(updatedCompany));
 	}
 
 	@PutMapping("/{id}/employees")
@@ -109,26 +120,32 @@ public class CompanyController {
 		}
 	}
 
-	@GetMapping("/listbysalary")
-	public List<CompanyDto> getByEmployeesWithMinSalary(@RequestParam int salary) {
-		return companyMapper.companiesToDtos(companyService.listCompaniesWhereEmployeesGetMinSalary(salary));
-	}
-	
-	@GetMapping("/listbynumberofemployees")
-	public List<CompanyDto> getByNumberOfEmployeesExceeds(@RequestParam int limit) {
-		return companyMapper.companiesToDtos(companyService.listCompaniesWhereNumberOfEmployeesExceeds(limit));
-	}
-	
+	// ezt még be kell fejezni, mentse el az újat is
 	@PutMapping("/{id}/companytype")
 	public CompanyDto addCompanyType(@PathVariable long id, @RequestParam String companyType) {
 		try {
-			return companyMapper
-					.companyToDto(companyService.addCompanyType(id, companyType));
+			return companyMapper.companyToDto(companyService.addCompanyType(id, new CompanyType(companyType)));
 		} catch (NoSuchElementException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		} catch (IllegalArgumentException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
+	@DeleteMapping("/{id}")
+	public void deleteCompany(@PathVariable long id) {
+		companyService.deleteById(id);
+	}
+
+	@DeleteMapping("/{id}/employees/{employeeId}")
+	public CompanyDto deleteEmployee(@PathVariable long id, @PathVariable long employeeId) { // csak a cégből vesszük
+																								// ki, nem töröljük az
+																								// employeet
+		try {
+			return companyMapper.companyToDto(companyService.deleteEmployee(id, employeeId));
+		} catch (NoSuchElementException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
+	}
+
 }

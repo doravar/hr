@@ -39,8 +39,17 @@ public class CompanyService {
 		return companyRepository.findAll();
 	}
 
+	public List<Company> findAllWithEmployees() {
+		return companyRepository.findAllWithEmployees();
+	}
+
 	public Optional<Company> findById(Long id) {
 		return companyRepository.findById(id);
+	}
+
+	public Optional<Company> findByIdWithEmployees(Long id) {
+//		return companyRepository.findByIdWithEmployees(id);
+		return Optional.of(companyRepository.findByIdWithEmployees(id));
 	}
 
 	public void deleteById(Long id) {
@@ -91,18 +100,11 @@ public class CompanyService {
 		return companyRepository.findCompaniesWhereNumberOfEmployeesExceeds(limit);
 	}
 
-	// Company type with enum, only 4 option
-//	public Company addCompanyType(Long id, String companyType) {
-//		Company company = companyRepository.findById(id).get();
-//		company.setCompanyType(CompanyType.valueOf(companyType));	//illegalargexc keletkezhet
-//		return companyRepository.save(company);
-//	}
-
-	// can save new company type
-	public Company addCompanyType(Long id, String companyType) {
+	// ezt még be kell fejezni, mentse el az újat is
+	public Company addCompanyType(Long id, CompanyType companyType) {
 		Company company = companyRepository.findById(id).get();
 		company.setCompanyType(companyType);
 		return companyRepository.save(company);
 	}
-	
+
 }

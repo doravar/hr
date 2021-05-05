@@ -24,7 +24,6 @@ public class HrApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
 
-		CompanyType ct = CompanyType.valueOf("BT");
 		ApplicationContext c = SpringApplication.run(HrApplication.class, args);
 		
 // beanek kilistázása:
@@ -42,6 +41,7 @@ public class HrApplication implements CommandLineRunner {
 
 		initDbService.clearDB();
 		initDbService.insertTestData();
+		
 		
 		
 //		System.out.println("minimum 10 éve dolgozó: "

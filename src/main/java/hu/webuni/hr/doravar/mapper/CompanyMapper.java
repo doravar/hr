@@ -8,7 +8,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import hu.webuni.hr.doravar.dto.CompanyDto;
+import hu.webuni.hr.doravar.dto.EmployeeDto;
 import hu.webuni.hr.doravar.model.Company;
+import hu.webuni.hr.doravar.model.Employee;
 
 @Mapper(componentModel = "spring")
 public interface CompanyMapper {
@@ -26,5 +28,8 @@ public interface CompanyMapper {
 	List<CompanyDto> companySummariesToDtos(List<Company> companies);
 
 	Company dtoToCompany(CompanyDto companyDto);
-
+	
+	@Mapping(target = "companyName", source = "company.name")	// ugyanúgy mint empmapperben
+	@Mapping(target = "positionName", source = "position.name")
+	EmployeeDto employeeToDto(Employee employee);
 }
