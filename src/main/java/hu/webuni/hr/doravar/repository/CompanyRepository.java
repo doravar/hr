@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import hu.webuni.hr.doravar.model.AverageSalaryByPosition;
 import hu.webuni.hr.doravar.model.Company;
+import hu.webuni.hr.doravar.model.Employee;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
@@ -35,5 +36,8 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 	@EntityGraph("Company.full")
 	@Query("SELECT c FROM Company c WHERE c.id=:companyId")
 	public Company findByIdWithEmployees(Long companyId);
+	
+	@Query("SELECT e FROM Company c JOIN c.employees e WHERE c.id=:companyId")
+	public List<Employee> findEmployees(Long companyId);
 
 }

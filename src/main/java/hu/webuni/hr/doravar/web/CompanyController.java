@@ -25,6 +25,7 @@ import hu.webuni.hr.doravar.model.AverageSalaryByPosition;
 import hu.webuni.hr.doravar.model.Company;
 import hu.webuni.hr.doravar.model.CompanyType;
 import hu.webuni.hr.doravar.repository.CompanyRepository;
+import hu.webuni.hr.doravar.repository.CompanyTypeRepository;
 import hu.webuni.hr.doravar.service.CompanyService;
 
 @RestController
@@ -40,7 +41,7 @@ public class CompanyController {
 
 	@Autowired
 	EmployeeMapper employeeMapper;
-	
+
 	@Autowired
 	CompanyRepository companyRepository;
 
@@ -72,17 +73,16 @@ public class CompanyController {
 	public List<CompanyDto> getByNumberOfEmployeesExceeds(@RequestParam int minEmployees) {
 		return companyMapper.companiesToDtos(companyService.listCompaniesWhereNumberOfEmployeesExceeds(minEmployees));
 	}
-	
+
 	@GetMapping("/{id}/salaryStats")
 	public List<AverageSalaryByPosition> getSalaryStatsById(@PathVariable long id) {
 		return companyRepository.findAverageSalariesByPosition(id);
 	}
-	
-	
 
 	@PostMapping
 	public CompanyDto createCompany(@RequestBody CompanyDto companyDto) {
-		Company company = companyService.save(companyMapper.dtoToCompany(companyDto));	// save update-eli is, tehát ha volt ilyen id, felülírja!
+		Company company = companyService.save(companyMapper.dtoToCompany(companyDto)); // save update-eli is, tehát ha
+																						// volt ilyen id, felülírja!
 		return companyMapper.companyToDto(company); /*
 													 * a return az új objektumot küldi vissza miután a felvétele
 													 * megtörtént; két konverzió, hogy a közben belekerült adatok is
@@ -120,11 +120,10 @@ public class CompanyController {
 		}
 	}
 
-	// ezt még be kell fejezni, mentse el az újat is
-	@PutMapping("/{id}/companytype")
-	public CompanyDto addCompanyType(@PathVariable long id, @RequestParam String companyType) {
+	@PutMapping(path = "/{id}", params = "companyTypeName")
+	public CompanyDto addCompanyType(@PathVariable long id, @RequestParam String companyTypeName) {
 		try {
-			return companyMapper.companyToDto(companyService.addCompanyType(id, new CompanyType(companyType)));
+			return companyMapper.companyToDto(companyService.addCompanyType(id, companyTypeName));
 		} catch (NoSuchElementException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		} catch (IllegalArgumentException e) {

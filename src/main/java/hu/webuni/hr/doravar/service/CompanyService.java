@@ -1,10 +1,8 @@
 package hu.webuni.hr.doravar.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +11,9 @@ import hu.webuni.hr.doravar.model.Company;
 import hu.webuni.hr.doravar.model.CompanyType;
 import hu.webuni.hr.doravar.model.Employee;
 import hu.webuni.hr.doravar.repository.CompanyRepository;
+import hu.webuni.hr.doravar.repository.CompanyTypeRepository;
 import hu.webuni.hr.doravar.repository.EmployeeRepository;
+import hu.webuni.hr.doravar.repository.PositionDetailsByCompanyRepository;
 
 @Service
 public class CompanyService {
@@ -23,6 +23,12 @@ public class CompanyService {
 
 	@Autowired
 	EmployeeRepository employeeRepository;
+
+	@Autowired
+	CompanyTypeRepository companyTypeRepository;
+	
+	@Autowired
+	PositionDetailsByCompanyRepository positionDetailsByCompanyRepository;
 
 	public Company save(Company company) {
 		return companyRepository.save(company);
@@ -53,9 +59,15 @@ public class CompanyService {
 	}
 
 	public void deleteById(Long id) {
-		if (companyRepository.existsById(id))
+		if (companyRepository.existsById(id)) {
+			List<Employee> employees = companyRepository.findEmployees(id);
+			for (Employee employee : employees) {
+				employee.setCompany(null);
+				employeeRepository.save(employee);
+			}
+			positionDetailsByCompanyRepository.deleteByCompany(companyRepository.findById(id).get());
 			companyRepository.deleteById(id);
-		else
+		} else
 			throw new NoSuchElementException();
 	}
 
@@ -100,8 +112,10 @@ public class CompanyService {
 		return companyRepository.findCompaniesWhereNumberOfEmployeesExceeds(limit);
 	}
 
-	// ezt még be kell fejezni, mentse el az újat is
-	public Company addCompanyType(Long id, CompanyType companyType) {
+	public Company addCompanyType(Long id, String companyTypeName) {
+		CompanyType companyType = companyTypeRepository.findByName(companyTypeName).isEmpty()
+				? companyTypeRepository.save(new CompanyType(companyTypeName))
+				: companyTypeRepository.findByName(companyTypeName).get();
 		Company company = companyRepository.findById(id).get();
 		company.setCompanyType(companyType);
 		return companyRepository.save(company);

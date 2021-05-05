@@ -27,8 +27,10 @@ public interface CompanyMapper {
 	@IterableMapping(qualifiedByName = "summary")		// "summary" nevű mappelés alapján készítse a listát
 	List<CompanyDto> companySummariesToDtos(List<Company> companies);
 
+	@Mapping(target = "employees", ignore = true)
 	Company dtoToCompany(CompanyDto companyDto);
 	
+	// employees lista mappelésére:
 	@Mapping(target = "companyName", source = "company.name")	// ugyanúgy mint empmapperben
 	@Mapping(target = "positionName", source = "position.name")
 	EmployeeDto employeeToDto(Employee employee);
