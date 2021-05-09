@@ -123,7 +123,7 @@ public class CompanyController {
 	@PutMapping(path = "/{id}", params = "companyTypeName")
 	public CompanyDto addCompanyType(@PathVariable long id, @RequestParam String companyTypeName) {
 		try {
-			return companyMapper.companyToDto(companyService.addCompanyType(id, companyTypeName));
+			return companyMapper.companySummaryToDto(companyService.addCompanyType(id, companyTypeName));
 		} catch (NoSuchElementException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		} catch (IllegalArgumentException e) {
@@ -133,7 +133,11 @@ public class CompanyController {
 
 	@DeleteMapping("/{id}")
 	public void deleteCompany(@PathVariable long id) {
-		companyService.deleteById(id);
+		try {
+			companyService.deleteById(id);
+		} catch (NoSuchElementException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@DeleteMapping("/{id}/employees/{employeeId}")

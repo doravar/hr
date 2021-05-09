@@ -27,6 +27,12 @@ public class Position {
 		this.requiredEducation = requiredEducation;
 //		this.minSalary = minSalary;
 	}
+	
+	
+
+	public Position(String name) {
+		this.name = name;
+	}
 
 	public Long getId() {
 		return id;

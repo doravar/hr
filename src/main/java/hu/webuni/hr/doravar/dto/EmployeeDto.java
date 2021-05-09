@@ -6,6 +6,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 
+import hu.webuni.hr.doravar.model.Company;
 import hu.webuni.hr.doravar.model.Position;
 
 public class EmployeeDto {
@@ -18,22 +19,33 @@ public class EmployeeDto {
 	@Past(message = "entryDate has to be past")
 	private LocalDate entryDate;
 
-	private String companyName;
-	@NotEmpty(message = "position has to be present")
 	private String positionName;
-
+	
+	private String companyName;
+	
+	
 	public EmployeeDto() {
 	}
 
-	public EmployeeDto(Long id, String name, String positionName, int salary, LocalDate entryDate) {
-		this.id = id;
+	public EmployeeDto(String name, int salary, LocalDate entryDate, String positionName, String companyName) {
 		this.name = name;
-		this.positionName = positionName;
 		this.salary = salary;
 		this.entryDate = entryDate;
+		this.companyName = companyName;
+		this.positionName = positionName;
 	}
 
-	public EmployeeDto(int salary, LocalDate entryDate) {
+	public EmployeeDto(Long id, String name, int salary, LocalDate entryDate, String positionName, String companyName) {
+		this.id =id;
+		this.name = name;
+		this.salary = salary;
+		this.entryDate = entryDate;
+		this.companyName = companyName;
+		this.positionName = positionName;
+	}
+
+	public EmployeeDto(String name, int salary, LocalDate entryDate) {
+		this.name = name;
 		this.salary = salary;
 		this.entryDate = entryDate;
 	}
@@ -70,6 +82,14 @@ public class EmployeeDto {
 		this.entryDate = entryDate;
 	}
 
+	public String getPositionName() {
+		return positionName;
+	}
+
+	public void setPositionName(String positionName) {
+		this.positionName = positionName;
+	}
+
 	public String getCompanyName() {
 		return companyName;
 	}
@@ -78,11 +98,6 @@ public class EmployeeDto {
 		this.companyName = companyName;
 	}
 
-	public String getPositionName() {
-		return positionName;
-	}
-
-	public void setPositionName(String positionName) {
-		this.positionName = positionName;
-	}
+	
+	
 }

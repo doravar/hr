@@ -17,7 +17,8 @@ public class CompanyDto {
 	private String name;
 	@JsonView(Views.BaseData.class)
 	private String address;
-	private CompanyType companyType;
+	private String companyTypeName;
+	
 	private List<EmployeeDto> employees = new ArrayList<>();
 	
 	
@@ -35,7 +36,22 @@ public class CompanyDto {
 		this.address = address;
 		this.employees = employees;
 	}
+	
+	public CompanyDto(long registrationNumber, String name, String address, List<EmployeeDto> employees) {
+		this.registrationNumber = registrationNumber;
+		this.name = name;
+		this.address = address;
+		this.employees = employees;
+	}
 
+	public CompanyDto(long registrationNumber, String name, String address) {
+		this.registrationNumber = registrationNumber;
+		this.name = name;
+		this.address = address;
+	}
+	
+	
+	
 	public void setId(long id) {
 		this.id = id;
 	}
@@ -72,13 +88,15 @@ public class CompanyDto {
 		this.employees = employees;
 	}
 
-	public CompanyType getCompanyType() {
-		return companyType;
+
+	public void setCompanyTypeName(String companyTypeName) {
+		this.companyTypeName = companyTypeName;
 	}
 
-	public void setCompanyType(CompanyType companyType) {
-		this.companyType = companyType;
+	public String getCompanyTypeName() {
+		return companyTypeName;
 	}
 
+	
 	
 }

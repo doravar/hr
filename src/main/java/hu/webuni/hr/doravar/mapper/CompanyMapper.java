@@ -16,9 +16,11 @@ import hu.webuni.hr.doravar.model.Employee;
 public interface CompanyMapper {
 
 	// két félét csinálunk lekérésekből: employee listával és anélkül
+	
 	CompanyDto companyToDto(Company company);
 
 	@Mapping(target = "employees", ignore = true)		// employees nélkül visszaadott companydto
+	@Mapping(target = "companyTypeName", source = "companyType.name")
 	@Named("summary")
 	CompanyDto companySummaryToDto(Company company);
 
@@ -27,11 +29,17 @@ public interface CompanyMapper {
 	@IterableMapping(qualifiedByName = "summary")		// "summary" nevű mappelés alapján készítse a listát
 	List<CompanyDto> companySummariesToDtos(List<Company> companies);
 
-	@Mapping(target = "employees", ignore = true)
 	Company dtoToCompany(CompanyDto companyDto);
 	
-	// employees lista mappelésére:
+	// company-ban lévő employees lista mappelésére:
 	@Mapping(target = "companyName", source = "company.name")	// ugyanúgy mint empmapperben
 	@Mapping(target = "positionName", source = "position.name")
 	EmployeeDto employeeToDto(Employee employee);
+	
+	Employee dtoToEmployee(EmployeeDto employeeDto);
+	
+	
+	
+	
+	
 }

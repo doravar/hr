@@ -32,4 +32,6 @@ public interface EmployeeService {
 	List<Employee> findByEntryDateBetween(LocalDate start, LocalDate end);
 
 	List<Object[]> countAvgSalaryByJobtitle(Long companyId);
+	
+	Employee addPosition(Long id, String positionName);
 }

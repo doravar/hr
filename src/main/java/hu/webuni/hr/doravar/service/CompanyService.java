@@ -96,7 +96,6 @@ public class CompanyService {
 			e.setCompany(null);
 		});
 		company.getEmployees().clear();
-
 		for (Employee emp : employees) {
 			company.addEmployee(emp);
 			employeeRepository.save(emp);

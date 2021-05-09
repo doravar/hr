@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import hu.webuni.hr.doravar.dto.CompanyDto;
 import hu.webuni.hr.doravar.dto.EmployeeDto;
 import hu.webuni.hr.doravar.mapper.EmployeeMapper;
 import hu.webuni.hr.doravar.model.Employee;
@@ -51,9 +52,9 @@ public class EmployeeController {
 	@GetMapping
 	public List<EmployeeDto> getEmployees(@RequestParam(required = false) Integer minSalary) {
 		if (minSalary == null) {
-			return employeeMapper.employeesToDtos(employeeService.findAll());
+			return employeeMapper.employeesSummariesToDtos(employeeService.findAll());
 		} else {
-			return employeeMapper.employeesToDtos(employeeRepository.findBySalaryGreaterThan(minSalary));
+			return employeeMapper.employeesSummariesToDtos(employeeRepository.findBySalaryGreaterThan(minSalary));
 		}
 	}
 
@@ -76,7 +77,7 @@ public class EmployeeController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<EmployeeDto> getById(@PathVariable long id) {
-		EmployeeDto employeeDto = employeeMapper.employeeToDto(
+		EmployeeDto employeeDto = employeeMapper.employeeSummaryToDto(
 				employeeService.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
 		if (employeeDto != null)
 			return ResponseEntity.ok(employeeDto);
@@ -90,14 +91,14 @@ public class EmployeeController {
 
 	@GetMapping(params = "jobTitle")
 	public List<EmployeeDto> getByJobTitle(@RequestParam String jobTitle) {
-		return employeeMapper.employeesToDtos(employeeService.findByJobTitle(jobTitle));
+		return employeeMapper.employeesSummariesToDtos(employeeService.findByJobTitle(jobTitle));
 	}
 
 	@GetMapping(params = "nameFragment")
 	public List<EmployeeDto> getByNameFragment(@RequestParam String nameFragment) {
 		return employeeMapper.employeesToDtos(employeeService.findByNameStartingWith(nameFragment));
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<EmployeeDto> createEmployee(@RequestBody @Valid EmployeeDto employeeDto,
 			BindingResult result) {
@@ -105,15 +106,13 @@ public class EmployeeController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		Employee employee = employeeService.save(employeeMapper.dtoToEmployee(employeeDto));
-		return ResponseEntity.ok(employeeMapper.employeeToDto(employee));
+		return ResponseEntity.ok(employeeMapper.employeeSummaryToDto(employee));
 	}
 
 	@PostMapping("/payRaise")
 	public Integer calculatingpayRaisePercent(@RequestBody @Valid Employee employee) {
 		return employeeService.getPayRaisePercent(employee);
 	}
-
-
 
 //	@PostMapping("/listByAvgSalary")
 //	public List<Object[]> getByAvgSalary(@RequestParam long companyId) {
@@ -139,7 +138,18 @@ public class EmployeeController {
 		if (updatedEmployee == null) {
 			return ResponseEntity.notFound().build();
 		} else {
-			return ResponseEntity.ok(employeeMapper.employeeToDto(updatedEmployee));
+			return ResponseEntity.ok(employeeMapper.employeeSummaryToDto(updatedEmployee));
+		}
+	}
+
+	@PutMapping(path = "/{id}", params = "positionName")
+	public EmployeeDto addPosition(@PathVariable long id, @RequestParam String positionName) {
+		try {
+			return employeeMapper.employeeSummaryToDto(employeeService.addPosition(id, positionName));
+		} catch (NoSuchElementException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		} catch (IllegalArgumentException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
 	}
 

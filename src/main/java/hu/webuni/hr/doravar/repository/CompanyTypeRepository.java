@@ -8,5 +8,5 @@ import hu.webuni.hr.doravar.model.CompanyType;
 
 public interface CompanyTypeRepository extends JpaRepository<CompanyType, Long> {
 
-	Optional<CompanyType> findByName (String name);
+	public Optional<CompanyType> findByName (String name);
 }

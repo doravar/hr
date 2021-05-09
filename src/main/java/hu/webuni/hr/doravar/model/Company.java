@@ -4,14 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 
-@NamedEntityGraph(name = "Company.full", attributeNodes = @NamedAttributeNode("employees"))
+@NamedEntityGraph(name = "Company.full", attributeNodes = { @NamedAttributeNode("companyType"),
+		@NamedAttributeNode(value = "employees", subgraph = "employeesGraph") }, subgraphs = {
+				@NamedSubgraph(name = "employeesGraph", attributeNodes = { @NamedAttributeNode("position") }) })
+
 @Entity
 public class Company {
 
@@ -22,11 +27,13 @@ public class Company {
 	private String name;
 	private String address;
 
-	@ManyToOne
+	@ManyToOne		// bydefault FetchType.EAGER
 	private CompanyType companyType;
 
-	@OneToMany(mappedBy = "company")
-//	@OneToMany(mappedBy = "company", cascade = {CascadeType.MERGE, CascadeType.PERSIST}) // ld service-ben addEmployee metódus
+	@OneToMany(mappedBy = "company", fetch = FetchType.EAGER) // entitygraph-full-lal nem tudtam megcsinálni!!
+	// @OneToMany(mappedBy = "company", cascade = {CascadeType.MERGE,
+	// CascadeType.PERSIST}) // ld service-ben addEmployee metódus
+//	@OneToMany
 	private List<Employee> employees = new ArrayList<>();
 
 	public long getId() {
@@ -48,6 +55,10 @@ public class Company {
 		this.registrationNumber = registrationNumber;
 		this.name = name;
 		this.address = address;
+	}
+
+	public Company(String name) {
+		this.name = name;
 	}
 
 	public void setId(long id) {
