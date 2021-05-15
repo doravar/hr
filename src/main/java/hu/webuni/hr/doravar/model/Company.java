@@ -13,7 +13,7 @@ import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 
-@NamedEntityGraph(name = "Company.full", attributeNodes = { @NamedAttributeNode("companyType"),
+@NamedEntityGraph(name = "Company.full", attributeNodes = {
 		@NamedAttributeNode(value = "employees", subgraph = "employeesGraph") }, subgraphs = {
 				@NamedSubgraph(name = "employeesGraph", attributeNodes = { @NamedAttributeNode("position") }) })
 
@@ -27,13 +27,12 @@ public class Company {
 	private String name;
 	private String address;
 
-	@ManyToOne		// bydefault FetchType.EAGER
+	@ManyToOne // bydefault FetchType.EAGER
 	private CompanyType companyType;
 
-	@OneToMany(mappedBy = "company", fetch = FetchType.EAGER) // entitygraph-full-lal nem tudtam megcsinálni!!
 	// @OneToMany(mappedBy = "company", cascade = {CascadeType.MERGE,
 	// CascadeType.PERSIST}) // ld service-ben addEmployee metódus
-//	@OneToMany
+	@OneToMany(mappedBy = "company")
 	private List<Employee> employees = new ArrayList<>();
 
 	public long getId() {

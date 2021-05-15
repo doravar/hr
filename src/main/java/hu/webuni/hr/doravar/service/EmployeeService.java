@@ -34,4 +34,6 @@ public interface EmployeeService {
 	List<Object[]> countAvgSalaryByJobtitle(Long companyId);
 	
 	Employee addPosition(Long id, String positionName);
+	
+	List<Employee> findEmployeesByExample(Employee example);
 }

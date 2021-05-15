@@ -16,8 +16,7 @@ import hu.webuni.hr.doravar.model.Employee;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
 	@EntityGraph("Company.full")
-	// distinct: ha nincs, akkor ahol több alkalmazottra is igaz, többször adja
-	// vissza az adott companyt
+	// distinct: ha nincs, akkor ahol több alkalmazottra is igaz, többször adja vissza az adott companyt
 	@Query("SELECT DISTINCT c FROM Company c JOIN c.employees e WHERE e.salary >:salary")
 	public List<Company> findCompaniesWhereEmployeesGetMinSalary(int salary);
 
@@ -31,7 +30,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 	public List<AverageSalaryByPosition> findAverageSalariesByPosition(long companyId);
 
 //	@Query("SELECT DISTINCT c FROM Company c LEFT JOIN FETCH c.employees")		// ha nem EntityGraph-al csináljuk a fetch-elést
-//	@EntityGraph(attributePaths = "employees")
 	@EntityGraph("Company.full") // named entity graph, ilyenkor kell az entitásban is jelezni
 	@Query("SELECT c FROM Company c")
 	public List<Company> findAllWithEmployees();

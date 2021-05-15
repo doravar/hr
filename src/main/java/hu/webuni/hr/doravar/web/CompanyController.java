@@ -90,7 +90,7 @@ public class CompanyController {
 													 */
 	}
 
-	@PostMapping("/{id}/employees")
+	@PostMapping("/{id}/addNewEmployee")
 	public CompanyDto addNewEmployee(@PathVariable long id, @RequestBody EmployeeDto employeeDto) {
 		try {
 			return companyMapper
@@ -110,7 +110,7 @@ public class CompanyController {
 		return ResponseEntity.ok(companyMapper.companyToDto(updatedCompany));
 	}
 
-	@PutMapping("/{id}/employees")
+	@PutMapping("/{id}/replaceEmployees")
 	public CompanyDto replaceEmployees(@PathVariable long id, @RequestBody List<EmployeeDto> employees) {
 		try {
 			return companyMapper

@@ -19,6 +19,5 @@ public class SalaryController {
 	@PutMapping(params = {"positionName", "minSalary", "companyId"})
 	public void raiseMinSalary(String positionName, int minSalary, long companyId) {
 		salaryService.raiseMinimalSalary(positionName, minSalary, companyId);
-//		salaryService.raiseMinimalSalary(positionName, minSalary, companyId);
 	}
 }

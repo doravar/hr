@@ -8,9 +8,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import hu.webuni.hr.doravar.model.Company;
-import hu.webuni.hr.doravar.model.CompanyType;
 import hu.webuni.hr.doravar.model.Employee;
 import hu.webuni.hr.doravar.model.Position;
 import hu.webuni.hr.doravar.repository.EmployeeRepository;
@@ -20,14 +23,16 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 
 	@Autowired
 	EmployeeRepository employeeRepository;
-	
+
 	@Autowired
 	PositionRepository positionRepository;
 
+	@Transactional
 	public Employee save(Employee employee) {
 		return employeeRepository.save(employee);
 	}
 
+	@Transactional
 	public Employee update(Employee employee) {
 		if (!employeeRepository.existsById(employee.getId()))
 			return null;
@@ -47,6 +52,7 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 		return employeeRepository.findById(id);
 	}
 
+	@Transactional
 	public void deleteById(Long id) {
 		if (employeeRepository.existsById(id))
 			employeeRepository.deleteById(id);
@@ -69,7 +75,8 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 	public List<Object[]> countAvgSalaryByJobtitle(Long companyId) {
 		return employeeRepository.countAvgSalaryByJobtitle(companyId);
 	}
-	
+
+	@Transactional
 	public Employee addPosition(Long id, String positionName) {
 		Position Position = positionRepository.findByName(positionName).isEmpty()
 				? positionRepository.save(new Position(positionName))
@@ -79,4 +86,28 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 		return employeeRepository.save(employee);
 	}
 
+	public List<Employee> findEmployeesByExample(Employee example) {
+		Long id = example.getId();
+		String name = example.getName();
+		Position position = example.getPosition();
+		String positionName = position == null ? null : position.getName();
+		int salary = example.getSalary();
+		LocalDate entryDate = example.getEntryDate();
+		Company company = example.getCompany();
+		String companyName = company == null ? null : company.getName();
+		Specification<Employee> spec = Specification.where(null);
+		if (id != null)
+			spec = spec.and(EmployeeSpecifications.hasId(id));
+		if (StringUtils.hasText(name))
+			spec = spec.and(EmployeeSpecifications.hasName(name));
+		if (StringUtils.hasText(positionName))
+			spec = spec.and(EmployeeSpecifications.hasPosition(positionName));
+		if (salary > 0)
+			spec = spec.and(EmployeeSpecifications.hasSalary(salary));
+		if (entryDate != null)
+			spec = spec.and(EmployeeSpecifications.hasEntryDate(entryDate));
+		if (StringUtils.hasText(companyName))
+			spec = spec.and(EmployeeSpecifications.hasCompany(companyName));
+		return employeeRepository.findAll(spec, Sort.by("id"));
+	}
 }

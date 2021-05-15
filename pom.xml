@@ -87,8 +87,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<!-- <source>1.8</source> -->
-					<!-- <target>1.8</target> -->
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.mapstruct</groupId>
@@ -96,6 +94,11 @@
 							<version>${org.mapstruct.version}</version>
 						</path>
 						<!-- other annotation processors -->
+						<path>
+							<groupId>org.hibernate</groupId>
+							<artifactId>hibernate-jpamodelgen</artifactId>
+							<version>5.4.30.Final</version>
+						</path>
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>

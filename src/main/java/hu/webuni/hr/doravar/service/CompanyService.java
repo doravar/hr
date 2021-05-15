@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hu.webuni.hr.doravar.model.Company;
 import hu.webuni.hr.doravar.model.CompanyType;
@@ -30,10 +31,12 @@ public class CompanyService {
 	@Autowired
 	PositionDetailsByCompanyRepository positionDetailsByCompanyRepository;
 
+	@Transactional
 	public Company save(Company company) {
 		return companyRepository.save(company);
 	}
 
+	@Transactional
 	public Company update(Company company) {
 		if (!companyRepository.existsById(company.getId()))
 			return null;
@@ -58,6 +61,7 @@ public class CompanyService {
 		return Optional.of(companyRepository.findByIdWithEmployees(id));
 	}
 
+	@Transactional
 	public void deleteById(Long id) {
 		if (companyRepository.existsById(id)) {
 			List<Employee> employees = companyRepository.findEmployees(id);
@@ -71,6 +75,7 @@ public class CompanyService {
 			throw new NoSuchElementException();
 	}
 
+	@Transactional
 	public Company addEmployee(long id, Employee employee) {
 		Company company = companyRepository.findById(id).get(); // NoSuchElementException keletkezik ha nincs id, ezt a
 																// controller fogja kezelni
@@ -81,6 +86,7 @@ public class CompanyService {
 		return company;
 	}
 
+	@Transactional
 	public Company deleteEmployee(long id, long employeeId) {
 		Company company = companyRepository.findById(id).get();
 		Employee employee = employeeRepository.findById(employeeId).get();
@@ -90,6 +96,7 @@ public class CompanyService {
 		return company;
 	}
 
+	@Transactional
 	public Company replaceEmployees(long id, List<Employee> employees) {
 		Company company = companyRepository.findById(id).get();
 		company.getEmployees().stream().forEach(e -> { // összes employee-ban null lesz a company
@@ -111,6 +118,7 @@ public class CompanyService {
 		return companyRepository.findCompaniesWhereNumberOfEmployeesExceeds(limit);
 	}
 
+	@Transactional
 	public Company addCompanyType(Long id, String companyTypeName) {
 		CompanyType companyType = companyTypeRepository.findByName(companyTypeName).isEmpty()
 				? companyTypeRepository.save(new CompanyType(companyTypeName))

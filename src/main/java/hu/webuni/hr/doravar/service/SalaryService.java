@@ -1,6 +1,5 @@
 package hu.webuni.hr.doravar.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,11 +40,10 @@ public class SalaryService {
 //			});
 //		});
 //	}
-	
+
 	@Transactional
 	public void raiseMinimalSalary(String positionName, int minSalary, long companyId) {
-		positionDetailsByCompanyRepository.findByPositionNameAndCompanyId(positionName, companyId)
-		.forEach(pd ->{
+		positionDetailsByCompanyRepository.findByPositionNameAndCompanyId(positionName, companyId).forEach(pd -> {
 			pd.setMinSalary(minSalary);
 //			pd.getCompany().getEmployees().forEach(e ->{		// ehelyett lett az emp.repo-ban updateSalaries, de az összes emp-t be kell tölteni hozz
 //				if(e.getPosition().getName().equals(positionName)
@@ -53,9 +51,7 @@ public class SalaryService {
 //					e.setSalary(minSalary);
 //			});
 		});
-		
 		employeeRepository.updateSalaries(positionName, minSalary, companyId);
 	}
-	
-	
+
 }

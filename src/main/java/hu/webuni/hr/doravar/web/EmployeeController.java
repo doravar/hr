@@ -128,6 +128,14 @@ public class EmployeeController {
 		return titleAndAndSalary;
 	}
 
+	// position és company esetében még nem működik, a dto -> entity mappelés
+	// hiányai (dto-ban csak positionname) miatt
+	@GetMapping("/getByExample")
+	public List<EmployeeDto> findEmployeesByExample(@RequestBody EmployeeDto employeeDto) {
+		return employeeMapper.employeesSummariesToDtos(
+				employeeService.findEmployeesByExample(employeeMapper.dtoToEmployee(employeeDto)));
+	}
+
 	@PutMapping("/{id}")
 	public ResponseEntity<EmployeeDto> modifyEmployee(@PathVariable long id,
 			@RequestBody @Valid EmployeeDto employeeDto, BindingResult result) {
