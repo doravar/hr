@@ -92,9 +92,10 @@ public class CompanyController {
 
 	@PostMapping("/{id}/addNewEmployee")
 	public CompanyDto addNewEmployee(@PathVariable long id, @RequestBody EmployeeDto employeeDto) {
+		String positionName = employeeDto.getPositionName();
 		try {
 			return companyMapper
-					.companyToDto(companyService.addEmployee(id, employeeMapper.dtoToEmployee(employeeDto)));
+					.companyToDto(companyService.addEmployee(id, employeeMapper.dtoToEmployee(employeeDto), positionName));
 		} catch (NoSuchElementException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}

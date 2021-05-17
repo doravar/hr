@@ -30,6 +30,7 @@ import hu.webuni.hr.doravar.dto.CompanyDto;
 import hu.webuni.hr.doravar.dto.EmployeeDto;
 import hu.webuni.hr.doravar.mapper.EmployeeMapper;
 import hu.webuni.hr.doravar.model.Employee;
+import hu.webuni.hr.doravar.model.Position;
 import hu.webuni.hr.doravar.repository.EmployeeRepository;
 import hu.webuni.hr.doravar.service.EmployeeService;
 
@@ -105,7 +106,9 @@ public class EmployeeController {
 		if (result.hasErrors()) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		Employee employee = employeeService.save(employeeMapper.dtoToEmployee(employeeDto));
+		String positionName = employeeDto.getPositionName();
+		String companyName = employeeDto.getCompanyName();
+		Employee employee = employeeService.save((employeeMapper.dtoToEmployee(employeeDto)), positionName, companyName);
 		return ResponseEntity.ok(employeeMapper.employeeSummaryToDto(employee));
 	}
 
@@ -130,7 +133,7 @@ public class EmployeeController {
 
 	// position és company esetében még nem működik, a dto -> entity mappelés
 	// hiányai (dto-ban csak positionname) miatt
-	@GetMapping("/getByExample")
+	@PostMapping("/getByExample")
 	public List<EmployeeDto> findEmployeesByExample(@RequestBody EmployeeDto employeeDto) {
 		return employeeMapper.employeesSummariesToDtos(
 				employeeService.findEmployeesByExample(employeeMapper.dtoToEmployee(employeeDto)));

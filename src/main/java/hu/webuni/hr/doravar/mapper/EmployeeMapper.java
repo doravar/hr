@@ -22,6 +22,9 @@ public interface EmployeeMapper {
 	@Named("summary")
 	EmployeeDto employeeSummaryToDto(Employee employee);
 
+	@Mapping(target = "company.name", source = "companyName")
+	@Mapping(target = "position.name", source = "positionName")
+	@Named("summaryToEntity")
 	Employee dtoToEmployee(EmployeeDto employeeDto);
 
 	List<EmployeeDto> employeesToDtos(List<Employee> employees);
@@ -29,6 +32,7 @@ public interface EmployeeMapper {
 	@IterableMapping(qualifiedByName = "summary")
 	List<EmployeeDto> employeesSummariesToDtos(List<Employee> employees);
 
+	@IterableMapping(qualifiedByName = "summaryToEntity")
 	List<Employee> dtosToEmployees(List<EmployeeDto> employees);
 
 }

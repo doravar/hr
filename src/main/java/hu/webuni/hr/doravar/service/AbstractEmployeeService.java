@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import hu.webuni.hr.doravar.model.Company;
 import hu.webuni.hr.doravar.model.Employee;
 import hu.webuni.hr.doravar.model.Position;
+import hu.webuni.hr.doravar.repository.CompanyRepository;
 import hu.webuni.hr.doravar.repository.EmployeeRepository;
 import hu.webuni.hr.doravar.repository.PositionRepository;
 
@@ -27,8 +28,24 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 	@Autowired
 	PositionRepository positionRepository;
 
+	@Autowired
+	CompanyRepository companyRepository;
+
 	@Transactional
 	public Employee save(Employee employee) {
+		return employeeRepository.save(employee);
+	}
+
+	@Transactional
+	public Employee save(Employee employee, String positionName, String companyName) {
+		Position Position = positionRepository.findByName(positionName).isEmpty()
+				? positionRepository.save(new Position(positionName))
+				: positionRepository.findByName(positionName).get();
+		employee.setPosition(Position);
+		Company company = companyRepository.findByName(companyName).isEmpty()
+				? companyRepository.save(new Company(companyName))
+				: companyRepository.findByName(companyName).get();
+		employee.setCompany(company);
 		return employeeRepository.save(employee);
 	}
 
@@ -36,8 +53,19 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 	public Employee update(Employee employee) {
 		if (!employeeRepository.existsById(employee.getId()))
 			return null;
-		else
-			return employeeRepository.save(employee);
+		else {
+			String positionName = employee.getPosition().getName();
+			Position position = positionRepository.findByName(positionName).isEmpty()
+					? positionRepository.save(new Position(positionName))
+					: positionRepository.findByName(positionName).get();
+			employee.setPosition(position);
+			String companyName = employee.getCompany().getName();
+			Company company = companyRepository.findByName(companyName).isEmpty()
+					? companyRepository.save(new Company(companyName))
+					: companyRepository.findByName(companyName).get();
+			employee.setCompany(company);
+		}
+		return employeeRepository.save(employee);
 	}
 
 	public Page<Employee> findAll(Pageable pageable) {

@@ -20,10 +20,9 @@ public class EmployeeDto {
 	private LocalDate entryDate;
 
 	private String positionName;
-	
+
 	private String companyName;
-	
-	
+
 	public EmployeeDto() {
 	}
 
@@ -36,7 +35,7 @@ public class EmployeeDto {
 	}
 
 	public EmployeeDto(Long id, String name, int salary, LocalDate entryDate, String positionName, String companyName) {
-		this.id =id;
+		this.id = id;
 		this.name = name;
 		this.salary = salary;
 		this.entryDate = entryDate;
@@ -98,6 +97,44 @@ public class EmployeeDto {
 		this.companyName = companyName;
 	}
 
-	
-	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((entryDate == null) ? 0 : entryDate.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((positionName == null) ? 0 : positionName.hashCode());
+		result = prime * result + salary;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EmployeeDto other = (EmployeeDto) obj;
+		if (entryDate == null) {
+			if (other.entryDate != null)
+				return false;
+		} else if (!entryDate.equals(other.entryDate))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (positionName == null) {
+			if (other.positionName != null)
+				return false;
+		} else if (!positionName.equals(other.positionName))
+			return false;
+		if (salary != other.salary)
+			return false;
+		return true;
+	}
+
 }

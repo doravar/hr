@@ -15,7 +15,7 @@ public class Position {
 	private String name;
 	private Education requiredEducation;
 //	private int minSalary;
-	
+
 	@OneToMany(mappedBy = "position")
 	private List<Employee> employees;
 
@@ -27,8 +27,6 @@ public class Position {
 		this.requiredEducation = requiredEducation;
 //		this.minSalary = minSalary;
 	}
-	
-	
 
 	public Position(String name) {
 		this.name = name;
@@ -74,5 +72,4 @@ public class Position {
 		this.employees = employees;
 	}
 
-	
 }

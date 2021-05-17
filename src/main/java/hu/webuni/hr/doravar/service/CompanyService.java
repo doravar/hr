@@ -11,10 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import hu.webuni.hr.doravar.model.Company;
 import hu.webuni.hr.doravar.model.CompanyType;
 import hu.webuni.hr.doravar.model.Employee;
+import hu.webuni.hr.doravar.model.Position;
 import hu.webuni.hr.doravar.repository.CompanyRepository;
 import hu.webuni.hr.doravar.repository.CompanyTypeRepository;
 import hu.webuni.hr.doravar.repository.EmployeeRepository;
 import hu.webuni.hr.doravar.repository.PositionDetailsByCompanyRepository;
+import hu.webuni.hr.doravar.repository.PositionRepository;
 
 @Service
 public class CompanyService {
@@ -26,8 +28,11 @@ public class CompanyService {
 	EmployeeRepository employeeRepository;
 
 	@Autowired
+	PositionRepository positionRepository;
+
+	@Autowired
 	CompanyTypeRepository companyTypeRepository;
-	
+
 	@Autowired
 	PositionDetailsByCompanyRepository positionDetailsByCompanyRepository;
 
@@ -76,9 +81,14 @@ public class CompanyService {
 	}
 
 	@Transactional
-	public Company addEmployee(long id, Employee employee) {
-		Company company = companyRepository.findById(id).get(); // NoSuchElementException keletkezik ha nincs id, ezt a
-																// controller fogja kezelni
+	public Company addEmployee(long id, Employee employee, String positionName) {
+		Company company = companyRepository.findWithEmployeesById(id).get(); // NoSuchElementException keletkezik ha
+																				// nincs id, ezt a
+		// controller fogja kezelni
+		Position position = positionRepository.findByName(positionName).isEmpty()
+				? positionRepository.save(new Position(positionName))
+				: positionRepository.findByName(positionName).get();
+		employee.setPosition(position);
 		company.addEmployee(employee); // companyt nem kell külön visszamenteni, mert a employee tartalmazza az id-ját
 										// mint idegen kulcs, ebből az irányból mentődik companyba is
 //		companyRepository.save(company); //cascade-del működne csak, hogy mentse az új employeet is 
@@ -98,12 +108,17 @@ public class CompanyService {
 
 	@Transactional
 	public Company replaceEmployees(long id, List<Employee> employees) {
-		Company company = companyRepository.findById(id).get();
+		Company company = companyRepository.findWithEmployeesById(id).get();
 		company.getEmployees().stream().forEach(e -> { // összes employee-ban null lesz a company
 			e.setCompany(null);
 		});
 		company.getEmployees().clear();
 		for (Employee emp : employees) {
+			String positionName = emp.getPosition().getName();
+			Position Position = positionRepository.findByName(positionName).isEmpty()
+					? positionRepository.save(new Position(positionName))
+					: positionRepository.findByName(positionName).get();
+			emp.setPosition(Position);
 			company.addEmployee(emp);
 			employeeRepository.save(emp);
 		}

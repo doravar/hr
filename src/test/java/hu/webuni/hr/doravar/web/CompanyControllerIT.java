@@ -30,7 +30,7 @@ public class CompanyControllerIT {
 
 	@Autowired
 	CompanyRepository companyRepository;
-	
+
 	@Autowired
 	CompanyMapper companyMapper;
 
@@ -56,14 +56,14 @@ public class CompanyControllerIT {
 		companyController.addNewEmployee(id, employee2);
 		EmployeeDto employee3 = new EmployeeDto("Employee Name3", 300_000, LocalDate.of(2010, 03, 01));
 		EmployeeDto employee4 = new EmployeeDto("Employee Name4", 400_000, LocalDate.of(2013, 04, 01));
-		List<EmployeeDto> newListOfEmployees = List.of(employee3,employee4);
+		List<EmployeeDto> newListOfEmployees = List.of(employee3, employee4);
 		companyController.replaceEmployees(id, newListOfEmployees);
 		List<EmployeeDto> savedEmployees = companyController.getById(id, true).getEmployees();
-		
-		assertThat(savedEmployees.containsAll(newListOfEmployees)).isTrue();
-		assertThat(newListOfEmployees.containsAll(savedEmployees)).isTrue();
+
+		assertThat(savedEmployees).isEqualTo(newListOfEmployees);
+
 	}
-	
+
 	@Test
 	void testDeleteEmployee() throws Exception {
 		CompanyDto company = new CompanyDto(111L, "AlfaTech", "Lisboa");
@@ -74,16 +74,16 @@ public class CompanyControllerIT {
 		companyController.addNewEmployee(idOfCompany, employee1);
 		companyController.addNewEmployee(idOfCompany, employee2);
 		companyController.addNewEmployee(idOfCompany, employee3);
-		
+
 		List<EmployeeDto> listOfEmployeesBeforeDeleting = companyController.getById(idOfCompany, true).getEmployees();
-		
+
 		long idOfEmployee = listOfEmployeesBeforeDeleting.get(0).getId();
-		
+
 		companyController.deleteEmployee(idOfCompany, idOfEmployee);
-		
+
 		List<EmployeeDto> listOfEmployeesAfterDeleting = companyController.getById(idOfCompany, true).getEmployees();
-		
+
 		assertThat(listOfEmployeesAfterDeleting.contains(listOfEmployeesBeforeDeleting.get(0))).isFalse();
-		assertThat(listOfEmployeesAfterDeleting.size()).isEqualTo(listOfEmployeesBeforeDeleting.size()-1);
+		assertThat(listOfEmployeesAfterDeleting.size()).isEqualTo(listOfEmployeesBeforeDeleting.size() - 1);
 	}
 }
