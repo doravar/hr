@@ -12,8 +12,6 @@ import hu.webuni.hr.doravar.model.Employee;
 public interface EmployeeService {
 
 	int getPayRaisePercent(Employee employee);
-
-	Employee save(Employee employee, String positionName, String companyName);
 	
 	Employee save(Employee employee);
 

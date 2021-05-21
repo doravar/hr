@@ -31,20 +31,30 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 	@Autowired
 	CompanyRepository companyRepository;
 
-	@Transactional
-	public Employee save(Employee employee) {
-		return employeeRepository.save(employee);
-	}
+//	@Transactional
+//	public Employee save(Employee employee) {
+//		return employeeRepository.save(employee);
+//	}
 
 	@Transactional
-	public Employee save(Employee employee, String positionName, String companyName) {
-		Position Position = positionRepository.findByName(positionName).isEmpty()
-				? positionRepository.save(new Position(positionName))
-				: positionRepository.findByName(positionName).get();
-		employee.setPosition(Position);
-		Company company = companyRepository.findByName(companyName).isEmpty()
-				? companyRepository.save(new Company(companyName))
-				: companyRepository.findByName(companyName).get();
+	public Employee save(Employee employee) {
+		String positionName = employee.getPosition().getName();
+		Position position = null; // ha nem kapott positionname-t, akkor nullra állítsa a positiont az emp-ban
+									// (ellenkező esetben létrehoz egy null nevű positiont)
+		if (positionName != null) {
+			position = positionRepository.findByName(positionName).isEmpty()
+					? positionRepository.save(new Position(positionName))
+					: positionRepository.findByName(positionName).get();
+		}
+		employee.setPosition(position);
+
+		String companyName = employee.getCompany().getName();
+		Company company = null;
+		if (companyName != null) {
+			company = companyRepository.findByName(companyName).isEmpty()
+					? companyRepository.save(new Company(companyName))
+					: companyRepository.findByName(companyName).get();
+		}
 		employee.setCompany(company);
 		return employeeRepository.save(employee);
 	}

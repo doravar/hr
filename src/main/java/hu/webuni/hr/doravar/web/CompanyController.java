@@ -23,9 +23,7 @@ import hu.webuni.hr.doravar.mapper.CompanyMapper;
 import hu.webuni.hr.doravar.mapper.EmployeeMapper;
 import hu.webuni.hr.doravar.model.AverageSalaryByPosition;
 import hu.webuni.hr.doravar.model.Company;
-import hu.webuni.hr.doravar.model.CompanyType;
 import hu.webuni.hr.doravar.repository.CompanyRepository;
-import hu.webuni.hr.doravar.repository.CompanyTypeRepository;
 import hu.webuni.hr.doravar.service.CompanyService;
 
 @RestController

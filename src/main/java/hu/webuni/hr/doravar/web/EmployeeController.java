@@ -106,9 +106,7 @@ public class EmployeeController {
 		if (result.hasErrors()) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		String positionName = employeeDto.getPositionName();
-		String companyName = employeeDto.getCompanyName();
-		Employee employee = employeeService.save((employeeMapper.dtoToEmployee(employeeDto)), positionName, companyName);
+		Employee employee = employeeService.save((employeeMapper.dtoToEmployee(employeeDto)));
 		return ResponseEntity.ok(employeeMapper.employeeSummaryToDto(employee));
 	}
 
@@ -131,8 +129,6 @@ public class EmployeeController {
 		return titleAndAndSalary;
 	}
 
-	// position és company esetében még nem működik, a dto -> entity mappelés
-	// hiányai (dto-ban csak positionname) miatt
 	@PostMapping("/getByExample")
 	public List<EmployeeDto> findEmployeesByExample(@RequestBody EmployeeDto employeeDto) {
 		return employeeMapper.employeesSummariesToDtos(
