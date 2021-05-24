@@ -83,29 +83,33 @@ public class CompanyControllerIT {
 	}
 
 	private ResponseSpec createCompany(CompanyDto company) {
-		return webTestClient.post().uri(BASE_URI).bodyValue(company).exchange();
+		return webTestClient.post().uri(BASE_URI).headers(headers -> headers.setBasicAuth("user1", "pass"))
+				.bodyValue(company).exchange();
 	}
 
 	private ResponseSpec addNewEmployee(long id, EmployeeDto employeeDto) {
 		String path = BASE_URI + "/" + id + "/addNewEmployee";
-		return webTestClient.post().uri(path).bodyValue(employeeDto).exchange();
+		return webTestClient.post().uri(path).headers(headers -> headers.setBasicAuth("user2", "pass"))
+				.bodyValue(employeeDto).exchange();
 	}
 
 	private CompanyDto getCompanyByIdWithEmployees(long id) {
 		String path = BASE_URI + "/" + id;
-		return webTestClient.get().uri(uriBuilder -> uriBuilder.path(path).queryParam("full", true).build()).exchange()
-				.expectStatus().isOk().expectBody(CompanyDto.class).returnResult().getResponseBody();
+		return webTestClient.get().uri(uriBuilder -> uriBuilder.path(path).queryParam("full", true).build())
+				.headers(headers -> headers.setBasicAuth("user1", "pass")).exchange().expectStatus().isOk()
+				.expectBody(CompanyDto.class).returnResult().getResponseBody();
 	}
 
 	private ResponseSpec replaceEmployees(long id, List<EmployeeDto> employees) {
 		String path = BASE_URI + "/" + id + "/replaceEmployees";
-		return webTestClient.put().uri(path).bodyValue(employees).exchange();
+		return webTestClient.put().uri(path).headers(headers -> headers.setBasicAuth("user2", "pass"))
+				.bodyValue(employees).exchange();
 	}
 
 	private CompanyDto deleteEmployee(long companyId, long employeeId) {
 		String path = BASE_URI + "/" + companyId + "/employees/" + employeeId;
-		return webTestClient.delete().uri(path).exchange().expectStatus().isOk().expectBody(CompanyDto.class)
-				.returnResult().getResponseBody();
+		return webTestClient.delete().uri(path).headers(headers -> headers.setBasicAuth("user2", "pass")).exchange()
+				.expectStatus().isOk().expectBody(CompanyDto.class).returnResult().getResponseBody();
 	}
 
 }

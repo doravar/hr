@@ -3,6 +3,7 @@ package hu.webuni.hr.doravar.service;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import hu.webuni.hr.doravar.model.Company;
@@ -29,6 +30,9 @@ public class InitDbService {
 	
 	@Autowired
 	PositionDetailsByCompanyRepository positionDetailsByCompanyRepository;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 	public void clearDB() {
 		companyRepository.deleteAll();
@@ -52,7 +56,14 @@ public class InitDbService {
 		Company company1 = new Company(111, "Company1", "adress 1");
 		Company company2 = new Company(222, "Company2", "adress 2");
 		Company company3 = new Company(333, "Company3", "adress 3");
-
+		
+		employee1.setUsername("user1");
+		employee1.setPassword(passwordEncoder.encode("pass"));
+		
+		employee2.setUsername("user2");
+		employee2.setPassword(passwordEncoder.encode("pass"));
+		employee2.setManager(employee1);
+		
 		positionRepository.save(position1); 
 		positionRepository.save(position2); 
 		positionRepository.save(position3); 

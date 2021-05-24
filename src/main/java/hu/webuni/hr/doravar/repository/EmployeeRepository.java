@@ -2,6 +2,7 @@ package hu.webuni.hr.doravar.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, Pagin
 
 	List<Employee> findAllByOrderByIdAsc();
 
+	Optional<Employee> findByUsername(String username);
+	
 	List<Employee> findBySalaryGreaterThan(Integer minSalary);
 
 	List<Employee> findByPositionName(String positionName); // uaz mint @Query("SELECT DISTINCT e FROM Employee e JOIN

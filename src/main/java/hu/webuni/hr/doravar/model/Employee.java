@@ -1,12 +1,14 @@
 package hu.webuni.hr.doravar.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Employee {
@@ -21,10 +23,19 @@ public class Employee {
 
 	@ManyToOne
 	private Company company;
-	
+
 	@ManyToOne
 	private Position position;
 
+	private String username;
+	private String password;
+
+	@ManyToOne
+	private Employee manager;
+
+	@OneToMany(mappedBy = "employee")
+	private List<Holiday> holidays;
+	
 	public Employee() {
 	}
 
@@ -96,4 +107,46 @@ public class Employee {
 		this.company = company;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Employee getManager() {
+		return manager;
+	}
+
+	public void setManager(Employee manager) {
+		this.manager = manager;
+	}
+
+	public List<Holiday> getHolidays() {
+		return holidays;
+	}
+
+	public void setHolidays(List<Holiday> holidays) {
+		this.holidays = holidays;
+	}
+
+	public void addHolidaRequest(Holiday holiday) {
+		if(this.holidays == null)
+			this.holidays = new ArrayList<>();
+		this.holidays.add(holiday);
+		holiday.setEmployee(this);
+	}
+
+	
+	
+	
 }

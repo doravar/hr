@@ -6,8 +6,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 
-import hu.webuni.hr.doravar.model.Company;
-import hu.webuni.hr.doravar.model.Position;
+import hu.webuni.hr.doravar.model.Employee;
 
 public class EmployeeDto {
 
@@ -22,6 +21,10 @@ public class EmployeeDto {
 	private String positionName;
 
 	private String companyName;
+
+	private String username;
+
+	private EmployeeDto manager;
 
 	public EmployeeDto() {
 	}
@@ -95,6 +98,22 @@ public class EmployeeDto {
 
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
+	}
+
+	public EmployeeDto getManager() {
+		return manager;
+	}
+
+	public void setManager(EmployeeDto manager) {
+		this.manager = manager;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	@Override
